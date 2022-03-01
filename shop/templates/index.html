@@ -1,0 +1,51 @@
+{% extends 'main.html' %}
+{% block title %}<title>Интернет-магазин DVD</title>{% endblock %}
+{% block content %}
+<table>
+	<tr>
+		<td rowspan="2">
+			<div class="header">
+				{% block header %}<h3>Каталог</h3>{% endblock %}
+			</div>
+		</td>
+		<td class="section_bg"></td>
+		<td class="section_right"></td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<table class="sort">
+				<tr>
+					<td>Сортировать по:</td>
+					<td>цене (<a href="{{ request.path }}?sort=price&amp;up=1">возр.</a> | <a
+                            href="{{ request.path }}?sort=price&amp;up=0">убыв.</a>)
+					<td>названию (<a href="{{ request.path }}?sort=title&amp;up=1">возр.</a> | <a href="{{ request.path }}?sort=title&amp;up=0">убыв.</a>)
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<table class="products">
+    {% for product in products %}
+        {% cycle '<tr>' '' '' '' %}
+        <td>
+            <div class="intro_product">
+                <p class="img">
+                    <img src="{{ MEDIA_URL }}{{ product.image.url }}" alt="{{ product.title }}" />
+                </p>
+                <p class="title">
+                    <a href="https://storedvd.ru/product?id=16">{{ product.title }}</a>
+                </p>
+                <p class="price">{{ product.price }} руб.</p>
+                <p>
+                    <a class="link_cart" href="https://storedvd.ru/functions.php?func=add_cart&amp;id=16"></a>
+                </p>
+            </div>
+        </td>
+        {% if forloop.last %}
+            </tr>
+        {% else %}
+            {% cycle '' '' '' '</tr>' %}
+        {% endif %}
+    {% endfor %}
+</table>
+{% endblock %}
