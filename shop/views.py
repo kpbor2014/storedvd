@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.views import generic
 
 from shop.models import Section, Product
 
@@ -51,3 +52,12 @@ def section(request, id):
     )
 
 
+class ProductDetailView(generic.DetailView):
+    model = Product
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductDetailView, self).get_context_data(**kwargs)
+        context['products'] = Product.objects.\
+                                  filter(section__exact=self.get_object().section).\
+                                  exclude(id=self.get_object().id).order_by('?')[:4]
+        return context
