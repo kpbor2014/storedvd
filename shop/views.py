@@ -61,3 +61,7 @@ class ProductDetailView(generic.DetailView):
                                   filter(section__exact=self.get_object().section).\
                                   exclude(id=self.get_object().id).order_by('?')[:4]
         return context
+
+
+def handler404(request, exception):
+    return render(request, '404.html', status=404)

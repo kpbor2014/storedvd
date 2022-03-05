@@ -36,7 +36,8 @@
 			<p>Страна-производитель: <span>{{ product.country }}</span></p>
 			<p>Режиссёр: <span>{{ product.director }}</span></p>
 			{% if product.play %}
-				<p>Продолжительность: <span>{{ product.play }}</span></p>
+				{% load my_filters %}
+				<p>Продолжительность: <span>{{ product.play|convert_play }}</span></p>
 			{% endif %}
 			<p>В ролях: <span>{{ product.cast }}</span></p>
 			<table>
