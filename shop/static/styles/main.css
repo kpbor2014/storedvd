@@ -657,3 +657,32 @@ p.price {
 	border-bottom: none;
 	margin: 0;
 }
+
+/* Pagination */
+
+.pagination {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.pagination li {
+    display: inline;
+    list-style: none;
+}
+
+.pagination a {
+    color: #0480ba;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    text-decoration: underline;
+}
+
+.pagination .current {
+    color: #d51616;
+}
+
+form[name='reset'] table {
+    margin: 10px 0;
+}

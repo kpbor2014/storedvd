@@ -2,25 +2,29 @@
 {% block title %}<title>Интернет-магазин DVD</title>{% endblock %}
 {% block content %}
 <table>
-	<tr>
-		<td rowspan="2">
-			<div class="header">
-				{% block header %}<h3>Каталог</h3>{% endblock %}
-			</div>
-		</td>
-		<td class="section_bg"></td>
-		<td class="section_right"></td>
-	</tr>
+	{% block main_header %}
+		<tr>
+			<td rowspan="2">
+				<div class="header">
+					{% block header %}<h3>Каталог</h3>{% endblock %}
+				</div>
+			</td>
+			<td class="section_bg"></td>
+			<td class="section_right"></td>
+		</tr>
+	{% endblock %}
 	<tr>
 		<td colspan="2">
-			<table class="sort">
-				<tr>
-					<td>Сортировать по:</td>
-					<td>цене (<a href="{{ request.path }}?sort=price&amp;up=1">возр.</a> | <a
-                            href="{{ request.path }}?sort=price&amp;up=0">убыв.</a>)
-					<td>названию (<a href="{{ request.path }}?sort=title&amp;up=1">возр.</a> | <a href="{{ request.path }}?sort=title&amp;up=0">убыв.</a>)
-				</tr>
-			</table>
+			{% block sort %}
+				<table class="sort">
+					<tr>
+						<td>Сортировать по:</td>
+						<td>цене (<a href="{{ request.path }}?sort=price&amp;up=1">возр.</a> | <a
+								href="{{ request.path }}?sort=price&amp;up=0">убыв.</a>)
+						<td>названию (<a href="{{ request.path }}?sort=title&amp;up=1">возр.</a> | <a href="{{ request.path }}?sort=title&amp;up=0">убыв.</a>)
+					</tr>
+				</table>
+			{% endblock %}
 		</td>
 	</tr>
 </table>

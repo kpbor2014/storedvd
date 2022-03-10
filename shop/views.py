@@ -1,7 +1,10 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
 
+from shop.forms import SearchForm
 from shop.models import Section, Product
 
 
@@ -65,3 +68,31 @@ class ProductDetailView(generic.DetailView):
 
 def handler404(request, exception):
     return render(request, '404.html', status=404)
+
+
+class PageNotInteger:
+    pass
+
+
+def search(request):
+    search_form = SearchForm(request.GET)
+    if search_form.is_valid():
+        q = search_form.cleaned_data['q']
+        products = Product.objects.filter(
+            Q(title__icontains=q) | Q(country__icontains=q) | Q(director__icontains=q) | Q(cast__icontains=q) |
+            Q(description__icontains=q)
+        )
+        page = request.GET.get('page', 1)
+        paginator = Paginator(products, 4)
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_page)
+        context = {'products': products, 'q': q}
+        return render(
+            request,
+            'search.html',
+            context=context
+        )
