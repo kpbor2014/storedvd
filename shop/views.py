@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, Http404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 
 from shop.forms import SearchForm
@@ -9,7 +9,9 @@ from shop.models import Section, Product
 
 
 def index(request):
-
+    result = prerender(request)
+    if result:
+        return result
     products = Product.objects.all().order_by(get_order_by_products(request))[:8]
     context = {'products': products}
     return render(
@@ -44,6 +46,9 @@ def contacts(request):
     )
 
 def section(request, id):
+    result = prerender(request)
+    if result:
+        return result
     #obj = Section.objects.get(pk=id)
     obj = get_object_or_404(Section, pk=id)
     products = Product.objects.filter(section__exact=obj).order_by(get_order_by_products(request))
@@ -57,6 +62,12 @@ def section(request, id):
 
 class ProductDetailView(generic.DetailView):
     model = Product
+
+    def get(self,request, *args, **kwargs):
+        result = prerender(request)
+        if result:
+            return result
+        return super(ProductDetailView,self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(ProductDetailView, self).get_context_data(**kwargs)
@@ -75,6 +86,9 @@ class PageNotInteger:
 
 
 def search(request):
+    result = prerender(request)
+    if result:
+        return result
     search_form = SearchForm(request.GET)
     if search_form.is_valid():
         q = search_form.cleaned_data['q']
@@ -89,10 +103,25 @@ def search(request):
         except PageNotAnInteger:
             products = paginator.page(1)
         except EmptyPage:
-            products = paginator.page(paginator.num_page)
+            products = paginator.page(paginator.num_pages)
         context = {'products': products, 'q': q}
         return render(
             request,
             'search.html',
             context=context
         )
+
+def prerender(request):
+    if request.GET.get('add_cart'):
+        product_id = request.GET.get('add_cart')
+        get_object_or_404(Product, pk=product_id)
+        cart_info = request.session.get('cart_info', {})
+        count = cart_info.get(product_id, 0)
+        count += 1
+        cart_info.update({product_id: count})
+        request.session['cart_info'] = cart_info
+        print(cart_info)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
