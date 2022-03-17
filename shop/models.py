@@ -47,10 +47,22 @@ class Product(models.Model):
     description = models.TextField(verbose_name='Описание')
     date = models.DateField(auto_now_add=True, verbose_name='Дата добавления')
 
+
+    count = 1
+
+
     class Meta:
         ordering = ['title', '-year']
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
+
+    def get_count(self):
+        return self.count
+
+    def get_sum_price(self):
+        return self.count * self.price
+
+
 
     def __str__(self):
         return '{0} ({1})'.format(self.title, self.section.title)

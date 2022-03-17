@@ -2,10 +2,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views import generic
 
 from shop.forms import SearchForm
-from shop.models import Section, Product
+from shop.models import Section, Product, Discount
 
 
 def index(request):
@@ -19,6 +20,18 @@ def index(request):
         'index.html',
         context=context
     )
+
+def prerender(request):
+    if request.GET.get('add_cart'):
+        product_id = request.GET.get('add_cart')
+        get_object_or_404(Product, pk=product_id)
+        cart_info = request.session.get('cart_info', {})
+        count = cart_info.get(product_id, 0)
+        count += 1
+        cart_info.update({product_id: count})
+        request.session['cart_info'] = cart_info
+        #print(cart_info)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 def get_order_by_products(request):
     order_by = ''
@@ -111,17 +124,67 @@ def search(request):
             context=context
         )
 
-def prerender(request):
-    if request.GET.get('add_cart'):
-        product_id = request.GET.get('add_cart')
-        get_object_or_404(Product, pk=product_id)
-        cart_info = request.session.get('cart_info', {})
-        count = cart_info.get(product_id, 0)
-        count += 1
-        cart_info.update({product_id: count})
+
+
+def cart(request):
+    result = update_cart_info(request)
+    if result:
+        return result
+
+    cart_info = request.session.get('cart_info')
+    products = []
+    if cart_info:
+        for product_id in cart_info:
+            #product = get_object_or_404(Product, pk=product_id)
+            try:
+                product = Product.objects.get(pk=product_id)
+                product.count = cart_info[product_id]
+                products.append(product)
+            except Product.DoesNotExist:
+                raise Http404()
+    context = {'products': products, 'discount': request.session.get('discount', '')}
+    return render(
+        request,
+        'cart.html',
+        context=context
+    )
+
+
+def update_cart_info(request):
+    if request.POST:
+        cart_info = {}
+        for param in request.POST:
+            value = request.POST.get(param)
+            #print(param, value)
+            if param.startswith('count_') and value.isnumeric():
+                product_id = param.replace('count_', '')
+                get_object_or_404(Product, pk=product_id)
+                cart_info[product_id] = int(value)
+            elif param == 'discount' and value:
+                try:
+                    discount =Discount.objects.get(code__exact=value)
+                    request.session['discount'] = value
+                except Discount.DoesNotExist:
+                    pass
+
+
         request.session['cart_info'] = cart_info
-        print(cart_info)
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    if request.GET.get('delete_cart'):
+        cart_info = request.session.get('cart_info')
+        product_id = request.GET.get('delete_cart')
+        get_object_or_404(Product, pk=product_id)
+        current_count = cart_info.get(product_id, 0)
+        if current_count <= 1:
+            cart_info.pop(product_id)
+        else:
+            cart_info[product_id] -= 1
+        request.session['cart_info'] = cart_info
+        return HttpResponseRedirect(reverse('cart'))
+    #print('discount =', request.session.get('discount', ''))
+
+
+
 
 
 
