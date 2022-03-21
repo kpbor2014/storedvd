@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import generic
 
-from shop.forms import SearchForm
+from shop.forms import SearchForm, OrderModelForm
 from shop.models import Section, Product, Discount
 
 
@@ -184,6 +184,17 @@ def update_cart_info(request):
     #print('discount =', request.session.get('discount', ''))
 
 
+def order(request):
+    cart_info = request.session.get('cart_info')
+    if not cart_info:
+        raise Http404()
+    form =OrderModelForm()
+    context = {'form': form}
+    return render(
+        request,
+        'order.html',
+        context=context
+    )
 
 
 

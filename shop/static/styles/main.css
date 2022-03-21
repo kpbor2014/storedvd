@@ -544,7 +544,7 @@ p.price {
 	font-size: 80%;
 }
 
-#cart #discount table input[type="text"] {
+#cart #discount table input[type="text"], #cart #discount table input[type="email"] {
 	border: 1px solid #7cf115;
 	height: 26px;
 	text-align: left;
@@ -590,12 +590,12 @@ p.price {
 	vertical-align: middle;
 }
 
-#order input[type="text"], #order select, #order textarea {
+#order input[type="text"], #order input[type="email"], #order select, #order textarea {
 	background-color: #e8ffd6;
 	border: 1px solid #8ffa3b;
 }
 
-#order input[type="text"] {
+#order input[type="text"], #order input[type="email"] {
 	height: 24px;
 	width: 200px;
 }
@@ -685,4 +685,51 @@ p.price {
 
 form[name='reset'] table {
     margin: 10px 0;
+}
+
+/* Order */
+
+#order {
+	font-size: 90%;
+}
+
+#order table {
+	border-collapse: separate;
+	border-spacing: 0 3px;
+}
+
+#order .w120 {
+	width: 120px;
+}
+
+#order table td {
+	background-color: #fff;
+	padding: 5px;
+	vertical-align: middle;
+}
+
+#order input[type="text"], #order select, #order textarea {
+	background-color: #e8ffd6;
+	border: 1px solid #8ffa3b;
+}
+
+#order input[type="text"] {
+	height: 24px;
+	width: 200px;
+}
+
+#order select {
+	height: 28px;
+	width: 200px;
+	padding: 4px 4px 4px 0;
+}
+
+#order select option {
+	background: #d3fab4;
+}
+
+#order .button {
+	background: none;
+	padding-top: 10px;
+	text-align: right;
 }
