@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import generic
 
 from shop.forms import SearchForm, OrderModelForm
-from shop.models import Section, Product, Discount
+from shop.models import Section, Product, Discount, Order, OrderLine
 
 
 def index(request):
@@ -188,7 +188,31 @@ def order(request):
     cart_info = request.session.get('cart_info')
     if not cart_info:
         raise Http404()
-    form =OrderModelForm()
+    if request.method == 'POST':
+        form = OrderModelForm(request.POST)
+        if form.is_valid():
+            order_obj = Order()
+            order_obj.need_delivery = True if form.cleaned_data['delivery'] == 1 else False
+            discount_code = request.session.get('discount', '')
+            if discount_code:
+                try:
+                    discount = Discount.objects.get(code__exact=discount_code)
+                    order_obj.discount = discount
+                except Discount.DoesNotExist:
+                    pass
+            order_obj.name = form.cleaned_data['name']
+            order_obj.phone = form.cleaned_data['phone']
+            order_obj.email = form.cleaned_data['email']
+            order_obj.email = form.cleaned_data['email']
+            order_obj.address = form.cleaned_data['address']
+            order_obj.notice = form.cleaned_data['notice']
+            order_obj.save()
+            add_order_lines(request, order_obj)
+            return HttpResponseRedirect(reverse('addorder'))
+
+    else:
+        form =OrderModelForm()
+
     context = {'form': form}
     return render(
         request,
@@ -196,6 +220,20 @@ def order(request):
         context=context
     )
 
+def add_order_lines(request, order_obj):
+    cart_info = request.session.get('cart_info', {})
+    for key in cart_info:
+        order_line = OrderLine()
+        order_line.order = order_obj
+        order_line.product = get_object_or_404(Product, pk=key)
+        order_line.price = order_line.product.price
+        order_line.count = cart_info[key]
+        order_line.save()
+    del request.session['cart_info']
+    # request.session.clear() # Стирает слишком много, в том числе и авторизацию
 
-
-
+def addorder(request):
+    return render(
+        request,
+        'addorder.html'
+    )

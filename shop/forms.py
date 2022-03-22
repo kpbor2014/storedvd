@@ -1,4 +1,6 @@
 from django import forms
+from django.core.exceptions import ValidationError
+
 from shop.models import Order
 
 
@@ -29,4 +31,17 @@ class OrderModelForm(forms.ModelForm):
                 (attrs={'rows': 6, 'cols': 80}
             )
         }
+
+    def clean_delivery(self):
+        data = self.cleaned_data['delivery']
+        if data == 0:
+            raise ValidationError('Необходимо выбрать способ доставки')
+        return data
+
+    def clean(self):
+        delivery = self.cleaned_data['delivery']
+        address = self.cleaned_data['address']
+        if delivery == 1 and address == '':
+            raise ValidationError('Укажите адрес доставки')
+        return self.cleaned_data
 
