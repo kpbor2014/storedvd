@@ -1,7 +1,10 @@
+from django.contrib.auth.models import User, Group
+from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import get_template
 from django.urls import reverse
 from django.views import generic
 
@@ -203,11 +206,12 @@ def order(request):
             order_obj.name = form.cleaned_data['name']
             order_obj.phone = form.cleaned_data['phone']
             order_obj.email = form.cleaned_data['email']
-            order_obj.email = form.cleaned_data['email']
+#            order_obj.email = form.cleaned_data['email']
             order_obj.address = form.cleaned_data['address']
             order_obj.notice = form.cleaned_data['notice']
             order_obj.save()
             add_order_lines(request, order_obj)
+            add_user(form.cleaned_data['name'], form.cleaned_data['email'])
             return HttpResponseRedirect(reverse('addorder'))
 
     else:
@@ -237,3 +241,32 @@ def addorder(request):
         request,
         'addorder.html'
     )
+
+def add_user(name, email):
+    if User.objects.filter(email=email).exists() or User.objects.filter(username=email).exists():
+        return
+    password = User.objects.make_random_password()
+    user = User.objects.create_user(email, email, password)
+    user.first_name = name
+    group = Group.objects.get(name='Клиенты')
+    user.groups.add(group)
+    user.save
+
+    text = get_template('registration/registration_email.html')
+    html = get_template('registration/registration_email.html')
+
+    context = {'username': email, 'password': password}
+
+    subject = 'Регистрация'
+    from_email = 'from@example.com'
+    text_content = text.render(context)
+    html_content = html.render(context)
+    msg = EmailMultiAlternatives(subject, text_content, from_email, [email])
+    msg.attach_alternative(html_content, 'text/html')
+    msg.send()
+
+
+
+
+
+
