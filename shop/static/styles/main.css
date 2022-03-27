@@ -194,8 +194,9 @@ body {
 	width: 209px;
 }
 
-#left #menu {
+#left .menu {
 	background-color: #f1fae9;
+	margin-bottom: 20px;
 }
 
 #left .header {
@@ -203,19 +204,19 @@ body {
 	height: 32px;
 }
 
-#left #items {
+#left .items {
 	border: 1px solid #51bdf0;
 	border-bottom: none;
 	border-top: none;
 	padding: 10px 10px 0;
 }
 
-#left #items p {
+#left .items p {
 	border-bottom: 1px dashed #56bff0;
 	margin: 0 0 5px;
 }
 
-#left #items p a {
+#left .items p a {
 	color: #161514;
 	display: inline-block;
 	font-size: 90%;
@@ -224,11 +225,11 @@ body {
 	text-decoration: none;
 }
 
-#left #items p a:hover {
+#left .items p a:hover {
 	color: #05aefe;
 }
 
-#left #items p.last {
+#left .items p.last {
 	border-bottom: none;
 	margin: 0;
 }
@@ -498,7 +499,7 @@ p.price {
 	width: 74px;
 }
 
-#cart input[type="text"] {
+#cart input[type="text"], #cart input[type="email"], #cart input[type="password"] {
 	border: 1px solid #000;
 	font-size: 110%;
 	height: 24px;
@@ -544,7 +545,7 @@ p.price {
 	font-size: 80%;
 }
 
-#cart #discount table input[type="text"], #cart #discount table input[type="email"] {
+#cart #discount table input[type="text"], #cart #discount table input[type="email"], #cart #discount table input[type="password"] {
 	border: 1px solid #7cf115;
 	height: 26px;
 	text-align: left;
@@ -590,12 +591,12 @@ p.price {
 	vertical-align: middle;
 }
 
-#order input[type="text"], #order input[type="email"], #order select, #order textarea {
+#order input[type="text"], #order input[type="email"], #order input[type="password"], #order select, #order textarea {
 	background-color: #e8ffd6;
 	border: 1px solid #8ffa3b;
 }
 
-#order input[type="text"], #order input[type="email"] {
+#order input[type="text"], #order input[type="email"], #order input[type="password"] {
 	height: 24px;
 	width: 200px;
 }
@@ -653,7 +654,7 @@ p.price {
 	text-align: center;
 }
 
-#left #items p:last-child {
+#left .items p:last-child {
 	border-bottom: none;
 	margin: 0;
 }
@@ -687,49 +688,10 @@ form[name='reset'] table {
     margin: 10px 0;
 }
 
-/* Order */
+/* Orders */
 
-#order {
-	font-size: 90%;
-}
-
-#order table {
-	border-collapse: separate;
-	border-spacing: 0 3px;
-}
-
-#order .w120 {
-	width: 120px;
-}
-
-#order table td {
-	background-color: #fff;
-	padding: 5px;
-	vertical-align: middle;
-}
-
-#order input[type="text"], #order select, #order textarea {
-	background-color: #e8ffd6;
-	border: 1px solid #8ffa3b;
-}
-
-#order input[type="text"] {
-	height: 24px;
-	width: 200px;
-}
-
-#order select {
-	height: 28px;
-	width: 200px;
-	padding: 4px 4px 4px 0;
-}
-
-#order select option {
-	background: #d3fab4;
-}
-
-#order .button {
-	background: none;
-	padding-top: 10px;
-	text-align: right;
+#orders td {
+    padding: 5px !important;
+    text-align: center;
+    vertical-align: middle !important;
 }

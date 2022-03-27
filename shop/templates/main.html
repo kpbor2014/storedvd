@@ -63,16 +63,33 @@
 		</div>
 		<div id="content">
 			<div id="left">
-				<div id="menu">
+				<div class="menu">
 					<div class="header">
 						<h3>Разделы</h3>
 					</div>
-					<div id="items">
+					<div class="items">
 						{% for section in sections %}
 							<p>
 								<a href="{{ section.get_absolute_url }}">{{ section.title }}</a>
 							</p>
 						{% endfor %}
+					</div>
+					<div class="bottom"></div>
+				</div>
+				<div class="menu">
+					<div class="header">
+						<h3>Пользователь</h3>
+					</div>
+					<div  class="items">
+						{% if user.is_authenticated %}
+						<p>
+							<a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
+						</p>
+						{% else %}
+						<p>
+							<a href="{% url 'login' %}?next={{ request.path }}">Вход</a>
+						</p>
+						{% endif %}
 					</div>
 					<div class="bottom"></div>
 				</div>
