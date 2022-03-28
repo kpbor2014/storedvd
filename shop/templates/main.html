@@ -83,6 +83,9 @@
 					<div  class="items">
 						{% if user.is_authenticated %}
 						<p>
+							<a href="{% url 'orders' %}">Заказы</a>
+						</p>
+						<p>
 							<a href="{% url 'logout' %}?next={{ request.path }}">Выход</a>
 						</p>
 						{% else %}

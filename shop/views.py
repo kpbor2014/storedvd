@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -264,6 +265,16 @@ def add_user(name, email):
     msg = EmailMultiAlternatives(subject, text_content, from_email, [email])
     msg.attach_alternative(html_content, 'text/html')
     msg.send()
+
+@login_required
+def orders(request):
+    user_orders = Order.objects.filter(email__exact=request.user.email)
+
+    return render(
+        request,
+        'orders.html',
+        context={'orders': user_orders,}
+    )
 
 
 
