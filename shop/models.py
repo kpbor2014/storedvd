@@ -115,6 +115,7 @@ class Order(models.Model):
         ordering = ['-date_order']
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
+        permissions = (('can_set_status', 'Возможность настройки статуса'),)
 
     def display_products(self):
         display = ''

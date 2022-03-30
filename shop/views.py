@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.core.mail import EmailMultiAlternatives
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -276,6 +276,14 @@ def orders(request):
         context={'orders': user_orders,}
     )
 
+@permission_required('shop.can_set_status')
+def cancelorder(request, id):
+#    print(request.user.has_perm('shop.can_set_status'))
+    order_obj = get_object_or_404(Order, pk=id)
+    if order_obj.email == request.user.email and order_obj.status == 'NEW':
+        order_obj.status = 'CNL'
+        order_obj.save()
+    return HttpResponseRedirect(reverse('orders'))
 
 
 

@@ -24,10 +24,13 @@
 				<td>{{ order.display_products }}</td>
 				<td>{{ order.display_amount }}</td>
 				<td>{{ order.get_status_display }}</td>
-				<td></td>
+				<td>
+					{% if perms.shop.can_set_status and order.status == 'NEW' %}
+						<a href="{% url 'cancelorder' order.id %}">Отмена</a>
+					{% endif %}
+				</td>
 			</tr>
 			{% endfor %}
 		</table>
 	</div>
-
 {% endblock %}
