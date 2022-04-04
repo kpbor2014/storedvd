@@ -13,6 +13,7 @@ class Section(models.Model):
         unique=True,
         verbose_name='Название раздела'
     )
+    slug = models.SlugField(max_length=40, verbose_name='Псевдоним', default='')
 
     class Meta:
         ordering = ['id']
@@ -20,7 +21,8 @@ class Section(models.Model):
         verbose_name_plural = 'Разделы'
 
     def get_absolute_url(self):
-        return reverse('section', args=[self.id])
+#        return reverse('section', args=[self.id])
+        return reverse('section', args=[self.slug])
 
     def __str__(self):
         return self.title
@@ -28,6 +30,7 @@ class Section(models.Model):
 class Product(models.Model):
     section = models.ForeignKey(Section, on_delete=models.SET_NULL, null=True, verbose_name='Раздел')
     title = models.CharField(max_length=70, verbose_name='Название')
+    slug = models.SlugField(max_length=40, verbose_name='Псевдоним', default='')
     image = models.ImageField(upload_to='images', verbose_name='Изображение')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     year = models.IntegerField(
@@ -49,6 +52,8 @@ class Product(models.Model):
 
 
     count = 1
+
+
 
 
     class Meta:

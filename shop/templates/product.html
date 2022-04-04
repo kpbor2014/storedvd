@@ -4,7 +4,8 @@
             <img src="{{ MEDIA_URL }}{{ product.image.url }}" alt="{{ product.title }}" />
         </p>
         <p class="title">
-            <a href="{% url 'product' product.pk %}">{{ product.title }}</a>
+<!--            <a href="{% url 'product' product.pk %}">{{ product.title }}</a> -->
+            <a href="{% url 'product' product.slug %}">{{ product.title }}</a>
         </p>
         <p class="price">{{ product.price }} руб.</p>
         <p>

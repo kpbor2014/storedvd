@@ -1,3 +1,4 @@
+# import transliterate
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User, Group
 from django.core.mail import EmailMultiAlternatives
@@ -14,6 +15,22 @@ from shop.models import Section, Product, Discount, Order, OrderLine
 
 
 def index(request):
+    """
+# Код для транслита названий фильмов - урок 8.1*****
+    products = Product.objects.all()
+    for product in products:
+        slug = transliterate.translit(product.title, reversed=True)
+
+        slug = slug.replace("'", '')
+        slug = slug.replace('?', '')
+        slug = slug.replace(',', '')
+        slug = slug.replace(' ', '-')
+        slug = slug.lower()
+        product.slug = slug
+        product.save()
+#        print(slug)
+    """
+
     result = prerender(request)
     if result:
         return result
@@ -62,12 +79,14 @@ def contacts(request):
         'contacts.html',
     )
 
-def section(request, id):
+#def section(request, id):
+def section(request, slug):
     result = prerender(request)
     if result:
         return result
     #obj = Section.objects.get(pk=id)
-    obj = get_object_or_404(Section, pk=id)
+#    obj = get_object_or_404(Section, pk=id)
+    obj = get_object_or_404(Section, slug=slug)
     products = Product.objects.filter(section__exact=obj).order_by(get_order_by_products(request))
     context ={'section': obj, 'products': products}
     return render(

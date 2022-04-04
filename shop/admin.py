@@ -48,7 +48,7 @@ class PriceFilter(admin.SimpleListFilter):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title','section','image','price','date')
+    list_display = ('title','slug','section','image','price','date')
     # list_filter = ('section',)
     list_filter = ('section', PriceFilter,)
     actions_on_bottom = True
